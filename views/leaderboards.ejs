@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <% include head.ejs %>
+    <script src="/javascripts/leaderboards.js"></script>
+    <title><%= title %> leaderboards</title>
+</head>
+
+<body>
+<% include navbar.ejs %>
+<div id="content">
+    <h1><%= title %></h1>
+    <p>Welcome to <%= title %></p>
+    <select data-game-id="<%= game_id %>" title="Memes" id="category_select">
+        <% for (var c in categories) { %>
+        <option value="<%= c %>"><%= categories[c] %></option>
+        <% } %>
+    </select>
+    <div id="leaderboards">
+
+    </div>
+</div>
+</body>
+</html>

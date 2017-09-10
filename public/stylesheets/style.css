@@ -1,0 +1,47 @@
+/* line 3, ../sass/style.sass */
+#content {
+  margin: auto;
+  padding: 20px;
+  max-width: 1000px;
+  width: 1000px;
+}
+
+/* line 9, ../sass/style.sass */
+#leaderboards {
+  padding-top: 20px;
+}
+/* line 12, ../sass/style.sass */
+#leaderboards table thead > th {
+  text-align: center;
+}
+/* line 14, ../sass/style.sass */
+#leaderboards table tbody > tr {
+  cursor: pointer;
+  text-align: center;
+}
+/* line 18, ../sass/style.sass */
+#leaderboards .player-weblink {
+  text-decoration: none;
+}
+/* line 21, ../sass/style.sass */
+#leaderboards .loader {
+  margin: auto;
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #3498db;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 2s linear infinite;
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+/* line 37, ../sass/style.sass */
+body {
+  padding: 50px;
+}
