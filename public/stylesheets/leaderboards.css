@@ -34,15 +34,3 @@
 #categoriesTab {
   padding-top: 20px;
 }
-
-/* line 4, ../sass/style.sass */
-#content {
-  margin: auto;
-  padding: 20px;
-  max-width: 1000px;
-}
-
-/* line 9, ../sass/style.sass */
-body {
-  padding: 50px;
-}

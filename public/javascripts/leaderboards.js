@@ -3,6 +3,7 @@ $(document).ready(function () {
         function getSpinner() {
             return $('<div></div>').addClass('loader');
         }
+
         var div = $('#leaderboards');
         div.html(getSpinner());
         var params = {
@@ -22,14 +23,17 @@ $(document).ready(function () {
         var faw_video = '<i class="fa fa-video-camera" aria-hidden="true"></i>';
         var url = '/api/leaderboards?' + $.param(params);
 
+        console.log(url);
+
         $.getJSON(url, function (data) {
+            console.log(data);
             var table = $('<table></table>').addClass('table table-sm table-hover');
 
             // header
             var thead = $('<thead></thead>').append(
-              $($('<th></th>').text('Rank')),
-              $($('<th></th>').text('Runner')),
-              $($('<th></th>').text(data.headers.primary_name))
+                $($('<th></th>').text('Rank')),
+                $($('<th></th>').text('Runner')),
+                $($('<th></th>').text(data.headers.primary_name))
             );
 
             if (data.headers.secondary_name !== undefined) {
@@ -55,7 +59,7 @@ $(document).ready(function () {
             table.append(thead);
 
             var tbody = $('<tbody></tbody>');
-            for(var r in data.runs){
+            for (var r in data.runs) {
                 var run = data.runs[r];
                 var row = $('<tr></tr>').addClass('run').append(
                     $('<td></td>').text(run.rank)
@@ -107,7 +111,6 @@ $(document).ready(function () {
                 }
 
 
-
                 if (run.video === undefined) {
                     row.append(
                         $('<td></td>').text(' ')
@@ -121,7 +124,6 @@ $(document).ready(function () {
                 }
 
 
-
                 tbody.append(row);
             }
             table.append(tbody);
@@ -131,28 +133,54 @@ $(document).ready(function () {
         })
     }
 
-    // On load
-    var category_select = $('#category_select');
-    var category_id = category_select.val();
-    if (window.location.hash) {
-        category_id = window.location.hash.replace('#', '');
+    function updateCategory(div_categories, game_id, id_or_abbreviation) {
+        // Remove all active
+        div_categories.find('.category').each(function () {
+            $(this).removeClass('active');
+        });
+        div_categories.find('.dropdown-toggle').removeClass('active');
+
+        // Find the new tab
+        var category = div_categories.find(
+            "a[data-category-id='" + id_or_abbreviation + "'], " +
+            "a[data-abbreviation='" + id_or_abbreviation + "']"
+        );
+
+        // Activate the tab
+        category.addClass('active');
+        // Activate the misc tab if needed
+        if (category.parent().hasClass('dropdown-menu')) {
+            div_categories.find('.dropdown-toggle').addClass('active');
+        }
+
+        // Updates the leaderboards
+        buildLeaderboards(game_id, id_or_abbreviation);
     }
-    buildLeaderboards(category_select.attr('data-game-id'), category_id);
 
-    // On category select change
-    category_select.on('change', function () {
-        var game_id = $(this).attr('data-game-id');
-        var category_id = this.value;
-        buildLeaderboards(game_id, category_id);
-    });
 
-    $(document).on('click', 'div#leaderboards table tr', function(){
+    // On load
+    var category_select = $('#categoriesTab');
+    var game_id = category_select.attr('data-game-id');
+    var default_category_id = category_select.attr('data-default-category');
+
+
+    if (window.location.hash) {
+        default_category_id = window.location.hash.replace('#', '');
+    }
+    updateCategory(category_select, game_id, default_category_id);
+
+    $(document).on('click', 'div#leaderboards table tr', function () {
         var win = window.open($(this).attr('data-video'), '_blank');
     });
 
-    $(document).on('click', '.player-weblink', function(e){
+    $(document).on('click', '.player-weblink', function (e) {
         e.stopPropagation();
     });
+
+    // Categories select
+    $('ul#categoriesTab .category').on('click', function () {
+        updateCategory(category_select, game_id, $(this).attr('data-category-id'));
+    })
 
 
 });

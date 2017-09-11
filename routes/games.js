@@ -49,7 +49,11 @@ router.get('/:game', function (req, res, next) {
                 if (game.categories.data.hasOwnProperty(c)) {
                     var category = game.categories.data[c];
                     if (category.type === 'per-game') {
-                        categories[category.id] = category.name;
+                        categories[category.id] = {
+                            name: category.name,
+                            misc: category.miscellaneous,
+                            abbreviation: category.weblink.split('#')[1]
+                        }
                     }
                 }
             }
@@ -57,6 +61,7 @@ router.get('/:game', function (req, res, next) {
                 title: game.names.international,
                 game_id: game.id,
                 categories: categories,
+                default_category: game.categories.data[0].id,
                 games: soulsgames
             });
         }

@@ -1,0 +1,43 @@
+<ul class="nav nav-tabs" id="categoriesTab" role="tablist" data-game-id="<%= game_id %>" data-default-category="<%= default_category %>">
+    <%
+    for (var c in categories) {
+        if (categories[c].misc === false) { %>
+    <li class="nav-item nav-category">
+        <a
+                class="nav-link category"
+                data-category-id="<%= c %>"
+                data-abbreviation="<%= categories[c].abbreviation %>"
+                href="#<%= categories[c].abbreviation %>"
+        >
+            <%= categories[c].name %>
+        </a>
+    </li>
+    <%
+        } // End if
+    } // End for
+    %>
+
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+            Miscellaneous
+        </a>
+        <div class="dropdown-menu">
+            <% for (var c in categories) {
+                if (categories[c].misc === true) {
+            %>
+                <a
+                        class="dropdown-item category"
+                        data-category-id="<%= c %>"
+                        data-abbreviation="<%= categories[c].abbreviation %>"
+                        href="#<%= categories[c].abbreviation %>"
+
+
+                >
+                    <%= categories[c].name %>
+                </a>
+            <% }
+            }%>
+        </div>
+    </li>
+    %>
+</ul>
