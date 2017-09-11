@@ -75,19 +75,23 @@ module.exports = {
                 var default_timing = game.ruleset['default-time'];
 
                 var headers = {};
-                for (var t_1 in timings) {
-                    if (timings[t_1] === default_timing) {
-                        // Primary
-                        headers.primary_name = local_timing_methods[default_timing];
-                    } else {
-                        // Secondary (if any)
-                        headers.secondary_name = local_timing_methods[timings[t_1]];
+                if (default_timing === 'realtime_noloads') {
+                    headers.primary_name = 'Time';
+                } else {
+                    for (var t_1 in timings) {
+                        if (timings[t_1] === default_timing) {
+                            // Primary
+                            headers.primary_name = local_timing_methods[default_timing];
+                        } else {
+                            // Secondary (if any)
+                            headers.secondary_name = local_timing_methods[timings[t_1]];
+                        }
                     }
                 }
 
+
                 // Variables
                 var variables = {};
-
                 for (var v in json.data.variables.data) {
                     if (json.data.variables.data.hasOwnProperty(v)) {
                         var variable = json.data.variables.data[v];
@@ -115,14 +119,21 @@ module.exports = {
                         tmp['player-weblink'] = player.weblink !== undefined ? player.weblink : '';
 
                         // Primary timing method
-                        for (var t in timings) {
-                            if (timings[t] === default_timing) {
-                                // Primary
-                                tmp.primary = formatTime(run.run.times.primary_t);
-                            } else {
-                                // Secondary (if any)
-                                var secondary_t = run.run.times[timings[t] + '_t'];
-                                tmp.secondary = formatTime(secondary_t);
+
+                        if (default_timing === 'realtime_noloads') {
+                            console.log(timings);
+                            tmp.primary = formatTime(run.run.times.primary_t);
+                        } else {
+                            var local_timings = timings;
+                            for (var t in local_timings) {
+                                if (local_timings[t] === default_timing) {
+                                    // Primary
+                                    tmp.primary = formatTime(run.run.times[local_timings[t] + '_t']);
+                                } else {
+                                    // Secondary (if any)
+                                    var secondary_t = run.run.times[local_timings[t] + '_t'];
+                                    tmp.secondary = formatTime(secondary_t);
+                                }
                             }
                         }
 
