@@ -134,27 +134,31 @@ $(document).ready(function () {
     }
 
     function updateCategory(div_categories, game_id, id_or_abbreviation) {
-        // Remove all active
-        div_categories.find('.category').each(function () {
-            $(this).removeClass('active');
-        });
-        div_categories.find('.dropdown-toggle').removeClass('active');
-
         // Find the new tab
         var category = div_categories.find(
             "a[data-category-id='" + id_or_abbreviation + "'], " +
             "a[data-abbreviation='" + id_or_abbreviation + "']"
         );
 
-        // Activate the tab
-        category.addClass('active');
-        // Activate the misc tab if needed
-        if (category.parent().hasClass('dropdown-menu')) {
-            div_categories.find('.dropdown-toggle').addClass('active');
-        }
+        // If category not already selected
+        if (!category.hasClass('active')) {
+            // Remove all active
+            div_categories.find('.category').each(function () {
+                $(this).removeClass('active');
+            });
+            div_categories.find('.dropdown-toggle').removeClass('active');
 
-        // Updates the leaderboards
-        buildLeaderboards(game_id, id_or_abbreviation);
+
+            // Activate the tab
+            category.addClass('active');
+            // Activate the misc tab if needed
+            if (category.parent().hasClass('dropdown-menu')) {
+                div_categories.find('.dropdown-toggle').addClass('active');
+            }
+
+            // Updates the leaderboards
+            buildLeaderboards(game_id, id_or_abbreviation);
+        }
     }
 
 
