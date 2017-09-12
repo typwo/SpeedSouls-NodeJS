@@ -61,7 +61,7 @@ router.get('/:game', function (req, res, next) {
                 title: game.names.international,
                 game_id: game.id,
                 categories: categories,
-                default_category: game.categories.data[0].id,
+                default_category: game.categories.data[0].weblink.split('#')[1],
                 games: soulsgames
             });
         }

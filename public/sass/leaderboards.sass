@@ -7,12 +7,17 @@
     tbody > tr
       cursor: pointer
       text-align: center
+    .empty-row
+      text-align: center
 
   .player-weblink
     text-decoration: none
 
   .loader
-    margin: auto
+    margin-top: 40px
+    margin-right: auto
+    margin-left: auto
+    padding-top: 20px
     border: 5px solid #f3f3f3 /* Light grey */
     border-top: 5px solid #3498db /* Blue */
     border-radius: 50%
@@ -28,3 +33,7 @@
 
 #categoriesTab
   padding-top: 20px
+
+  .disabled
+    pointer-events: none
+    cursor: default

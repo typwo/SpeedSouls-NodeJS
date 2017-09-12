@@ -3,13 +3,13 @@ var router = express.Router();
 var url = require('url');
 var speedruncom = require('../bin/speedruncom');
 var apicache = require('apicache');
-var util = require("util");
 var http = require("http");
 
 var cache = apicache.middleware;
+var cache_value = '10 minutes';
 
 /* GET home page. */
-router.get('/leaderboards', cache('60 minutes'), function(req, res, next) {
+router.get('/leaderboards', cache(cache_value), function(req, res, next) {
     query = url.parse(req.url, true).query;
     var game = query.game === undefined ? false : query.game;
     var category = query.category === undefined ? false : query.category;
@@ -50,7 +50,7 @@ router.get('/speedruncom-cats/:game', cache('60 minutes'),function (req, res_, n
 /**
  * RETURNS THE LEADERBOARDS PAGE FROM A SPEEDRUN.COM
  */
-router.get('/speedruncom-leaderboards/:game/:category', cache('60 minutes'), function (req, res_, next) {
+router.get('/speedruncom-leaderboards/:game/:category', cache(cache_value), function (req, res_, next) {
     const $ = require('cheerio');
 
     var options = {
@@ -79,7 +79,7 @@ router.get('/speedruncom-leaderboards/:game/:category', cache('60 minutes'), fun
 /**
  * RETURNS CATEGORY
  */
-router.get('/games/:game/category/:category', function (req, res_, next) {
+router.get('/games/:game/category/:category', cache(cache_value), function (req, res_, next) {
     speedruncom.findCategory(req.params.game, req.params.category, function (data) {
         res_.json(data);
     })

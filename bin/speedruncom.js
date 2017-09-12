@@ -56,7 +56,7 @@ module.exports = {
         var url = buildUrl(
             '/leaderboards/' + game_id + '/category/' + category_id,
             {
-                // 'top': 10,
+                //'top': 100,
                 'embed': 'players,game,variables,platforms'
             }
         );
@@ -112,14 +112,25 @@ module.exports = {
                         // Rank
                         tmp.rank = run.place;
 
-                        // Player's name
-                        tmp.name = player.names === undefined ? player.name : player.names.international;
+                        // Player(s)
+                        var players_count = run.run.players.length;
+                        var players_xd = [];
+                        for (
+                            var index = ((parseInt(r) + 1) * players_count) - 1;
+                            index > (((parseInt(r) + 1) * players_count) - 1) - players_count;
+                            index--
+                        ) {
+                            var _player = json.data.players.data[index];
+                            players_xd.push({
+                                    name: _player.names === undefined ? _player.name : _player.names.international,
+                                    weblink: _player.weblink !== undefined ? _player.weblink : ''
+                                }
+                            );
+                        }
 
-                        // Player's link
-                        tmp['player-weblink'] = player.weblink !== undefined ? player.weblink : '';
+                        tmp.players = players_xd;
 
-                        // Primary timing method
-
+                        // Timing methods
                         var local_timings = timings;
                         for (var t in local_timings) {
                             if (local_timings[t] === default_timing) {
@@ -133,7 +144,7 @@ module.exports = {
                         }
 
 
-                        //Platform
+                        // Platform
                         for (var p in platforms) {
                             if (platforms[p].id === run.run.system.platform) {
                                 tmp.platform = platforms[p].name;
@@ -158,11 +169,17 @@ module.exports = {
 
                         // VOD
                         if (run.run.videos !== null) {
-                            tmp.video = run.run.videos.links[0].uri;
+                            if (run.run.videos.links.length === 1) {
+                                tmp.video = run.run.videos.links[0].uri;
+                            } else {
+                                tmp.video = run.run.weblink;
+                            }
                         }
 
+                        // Weblink
                         tmp.weblink = run.run.weblink;
 
+                        // Push the run
                         runs.push(tmp);
                     }
                 }

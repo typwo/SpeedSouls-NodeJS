@@ -1,20 +1,11 @@
 $(document).ready(function () {
-    /**
-     * BUILDS THE LEADERBOARDS
-     * From a game and a category
-     */
-    function buildLeaderboards(game_id, category_id) {
+    function _updateLeaderboards(leaderboards_data, bugged_number, callback) {
         // Loading spinner
-        function getSpinner() {
-            return $('<div></div>').addClass('loader');
-        }
 
         // Get the main leaderboards div
         var div = $('#leaderboards');
 
         // Replace the content by the spinner
-        div.html(getSpinner());
-
         // Console names
         var consoles = {
             'PlayStation 4': 'PS4',
@@ -28,143 +19,172 @@ $(document).ready(function () {
         // Font-awesome video icon
         var faw_video = '<i class="fa fa-video-camera" aria-hidden="true"></i>';
 
-        // Get the category DATA from our own API
-        $.getJSON('/api/games/' + game_id + /category/ + category_id, function (category_data) {
-            // Url Params
-            var params = {
-                game: game_id,
-                category: category_id
-            };
-            var url = '/api/leaderboards?' + $.param(params);
+        var table = $('<table></table>').addClass('table table-sm table-hover');
 
-            // Get leaderboards for the category
-            $.getJSON(url, function (data) {
+        // header
+        var thead = $('<thead></thead>').append(
+            $($('<th></th>').text('Rank')),
+            $($('<th></th>').text('Runner')),
+            $($('<th></th>').text(leaderboards_data.headers.primary_name))
+        );
 
-                /**
-                 * SPEEDRUN.COM BUG
-                 * Get the amount of runs on the leaderboards using the correct primary timing method
-                 */
+        if (leaderboards_data.headers.secondary_name !== undefined) {
+            thead.append(
+                $($('<th></th>').text(leaderboards_data.headers.secondary_name))
+            );
+        }
+
+        // Variables
+        for (var variable_i in leaderboards_data.variables) {
+            if (leaderboards_data.variables.hasOwnProperty(variable_i)) {
+                thead.append(
+                    $($('<th></th>').text(leaderboards_data.variables[variable_i]))
+                );
+            }
+        }
+
+        thead.append(
+            $($('<th></th>').text('Platform')),
+            $($('<th></th>').text('VOD'))
+        );
+
+        table.append(thead);
+
+        var tbody = $('<tbody></tbody>');
+        if (leaderboards_data.runs.length > 0) {
+            for (var r in leaderboards_data.runs) {
+                var run = leaderboards_data.runs[r];
+                var row = $('<tr></tr>').addClass('run').append(
+                    $('<td></td>').text(run.rank)
+                );
+
+                // Player(s)
+                var players_output = [];
+                for (var p in run.players) {
+                    var player = run.players[p];
+                    if (player.weblink !== '') {
+                        var element = $('<a></a>').addClass('player-weblink').attr(
+                            {
+                                'href': player.weblink,
+                                'target': '_blank'
+                            }
+                        ).text(player.name);
+                        var html = $("<div />").append($(element).clone()).html();
+                        players_output.push(html);
+                    } else {
+                        players_output.push(player.name)
+                    }
+                }
+
+                row.append(
+                    $('<td></td>').append(
+                        players_output.join(' & ')
+                    )
+                );
+
+
+                // BUG FIX
+                if (
+                    leaderboards_data.headers.default_timing === 'realtime_noloads' &&
+                    run.primary === "" &&
+                    r < bugged_number
+                ) {
+                    row.append(
+                        $('<td></td>').text(run.secondary)
+                    );
+                    row.append(
+                        $('<td></td>').text("")
+                    );
+                } else {
+                    row.append(
+                        $('<td></td>').text(run.primary)
+                    );
+
+                    row.append(
+                        $('<td></td>').text(run.secondary)
+                    );
+                }
+
+                for (var variable_i in leaderboards_data.variables) {
+                    if (leaderboards_data.variables.hasOwnProperty(variable_i)) {
+                        row.append(
+                            $('<td></td>').text(run[variable_i])
+                        );
+                    }
+                }
+
+                if (consoles[run.platform] !== undefined) {
+                    row.append(
+                        $('<td></td>').attr('title', run.platform).text(consoles[run.platform])
+                    );
+                } else {
+                    row.append(
+                        $('<td></td>').text(run.platform)
+                    );
+                }
+
+                if (run.video === undefined) {
+                    row.append(
+                        $('<td></td>').text(' ')
+                    );
+                    row.attr('data-video', run.weblink);
+                } else {
+                    row.append(
+                        $('<td></td>').html(faw_video)
+                    );
+                    row.attr('data-video', run.video);
+                }
+
+                tbody.append(row);
+            }
+        } else {
+            var colspan = $(thead).children('th').length;
+            // No runs
+            tbody.append(
+                $('<td></td>').attr('colspan', colspan).addClass('empty-row').text(
+                    'There is no runs.'
+                )
+            );
+        }
+        table.append(tbody);
+        div.empty();
+        div.append(table);
+        callback();
+    }
+
+    /**
+     * BUILDS THE LEADERBOARDS
+     * From a game and a category
+     */
+    function updateLeaderboards(game_id, category_id, callback) {
+        // Url Params
+        var params = {
+            game: game_id,
+            category: category_id
+        };
+        var url = '/api/leaderboards?' + $.param(params);
+        // Get leaderboards for the category
+        $.getJSON(url, function (leaderboards_data) {
+            /**
+             * SPEEDRUN.COM BUG
+             * Get the amount of runs on the leaderboards using the correct primary timing method
+             */
+            if (leaderboards_data.headers.default_timing === "realtime_noloads") {
+                // Get the category DATA from our own API
                 getSpeedrunComCategoryNoLoadRunsNumber(
-                    data.headers.game.abbreviation,
-                    category_data.weblink.split('#')[1],
+                    leaderboards_data.headers.game.abbreviation,
+                    category_id,
                     function (bugged_total_no_load_runs) {
-                        var table = $('<table></table>').addClass('table table-sm table-hover');
-
-                        // header
-                        var thead = $('<thead></thead>').append(
-                            $($('<th></th>').text('Rank')),
-                            $($('<th></th>').text('Runner')),
-                            $($('<th></th>').text(data.headers.primary_name))
-                        );
-
-                        if (data.headers.secondary_name !== undefined) {
-                            thead.append(
-                                $($('<th></th>').text(data.headers.secondary_name))
-                            );
-                        }
-
-                        // Variables
-                        for (var variable_i in data.variables) {
-                            if (data.variables.hasOwnProperty(variable_i)) {
-                                thead.append(
-                                    $($('<th></th>').text(data.variables[variable_i]))
-                                );
-                            }
-                        }
-
-                        thead.append(
-                            $($('<th></th>').text('Platform')),
-                            $($('<th></th>').text('VOD'))
-                        );
-
-                        table.append(thead);
-
-                        var tbody = $('<tbody></tbody>');
-                        for (var r in data.runs) {
-                            var run = data.runs[r];
-                            var row = $('<tr></tr>').addClass('run').append(
-                                $('<td></td>').text(run.rank)
-                            );
-
-                            if (run['player-weblink'] !== '') {
-                                row.append(
-                                    $('<td></td>').html(
-                                        $('<a></a>').addClass('player-weblink').attr(
-                                            {
-                                                'href': run['player-weblink'],
-                                                'target': '_blank'
-                                            }
-                                        ).text(run.name)
-                                    )
-                                );
-                            } else {
-                                row.append(
-                                    $('<td></td>').text(run.name)
-                                );
-                            }
-
-                            // BUG FIX
-                            if (
-                                data.headers.default_timing === 'realtime_noloads' &&
-                                run.primary === "" &&
-                                r < bugged_total_no_load_runs
-                            ) {
-                                row.append(
-                                    $('<td></td>').text(run.secondary)
-                                );
-                                row.append(
-                                    $('<td></td>').text("")
-                                );
-                            } else {
-                                row.append(
-                                    $('<td></td>').text(run.primary)
-                                );
-
-                                row.append(
-                                    $('<td></td>').text(run.secondary)
-                                );
-                            }
-
-                            for (var variable_i in data.variables) {
-                                if (data.variables.hasOwnProperty(variable_i)) {
-                                    row.append(
-                                        $('<td></td>').text(run[variable_i])
-                                    );
-                                }
-                            }
-
-                            if (consoles[run.platform] !== undefined) {
-                                row.append(
-                                    $('<td></td>').attr('title', run.platform).text(consoles[run.platform])
-                                );
-                            } else {
-                                row.append(
-                                    $('<td></td>').text(run.platform)
-                                );
-                            }
-
-
-                            if (run.video === undefined) {
-                                row.append(
-                                    $('<td></td>').text(' ')
-                                );
-                                row.attr('data-video', run.weblink);
-                            } else {
-                                row.append(
-                                    $('<td></td>').html(faw_video)
-                                );
-                                row.attr('data-video', run.video);
-                            }
-
-
-                            tbody.append(row);
-                        }
-                        table.append(tbody);
-                        div.empty();
-                        div.append(table);
+                        _updateLeaderboards(leaderboards_data, bugged_total_no_load_runs, function () {
+                            callback();
+                        });
                     }
                 );
-            })
+            } else {
+                _updateLeaderboards(leaderboards_data, 0, function () {
+                    callback();
+                });
+            }
         });
     }
 
@@ -219,6 +239,18 @@ $(document).ready(function () {
 
         // If category not already selected
         if (!category.hasClass('active')) {
+            // Disable categories buttons
+            div_categories.find('li.nav-category, li.dropdown').each(function () {
+                $(this).find('a').addClass('disabled');
+            });
+
+
+            function getSpinner() {
+                return $('<div></div>').addClass('loader');
+            }
+
+            $('#leaderboards').html(getSpinner());
+
             // Remove all active
             div_categories.find('.category').each(function () {
                 $(this).removeClass('active');
@@ -234,7 +266,12 @@ $(document).ready(function () {
             }
 
             // Updates the leaderboards
-            buildLeaderboards(game_id, id_or_abbreviation);
+            updateLeaderboards(game_id, id_or_abbreviation, function () {
+                // Enable categories buttons
+                div_categories.find('li.nav-category, li.dropdown').each(function () {
+                    $(this).find('a').removeClass('disabled');
+                });
+            });
         }
     }
 
@@ -251,7 +288,7 @@ $(document).ready(function () {
     updateCategory(category_select, game_id, default_category_id);
 
     $(document).on('click', 'div#leaderboards table tr', function () {
-        var win = window.open($(this).attr('data-video'), '_blank');
+        window.open($(this).attr('data-video'), '_blank');
     });
 
     $(document).on('click', '.player-weblink', function (e) {
@@ -260,6 +297,6 @@ $(document).ready(function () {
 
     // Categories select
     $('ul#categoriesTab .category').on('click', function () {
-        updateCategory(category_select, game_id, $(this).attr('data-category-id'));
+        updateCategory(category_select, game_id, $(this).attr('data-abbreviation'));
     });
 });

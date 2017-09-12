@@ -8,13 +8,20 @@
   cursor: pointer;
   text-align: center;
 }
-/* line 11, ../sass/leaderboards.sass */
+/* line 10, ../sass/leaderboards.sass */
+#leaderboards table .empty-row {
+  text-align: center;
+}
+/* line 13, ../sass/leaderboards.sass */
 #leaderboards .player-weblink {
   text-decoration: none;
 }
-/* line 14, ../sass/leaderboards.sass */
+/* line 16, ../sass/leaderboards.sass */
 #leaderboards .loader {
-  margin: auto;
+  margin-top: 40px;
+  margin-right: auto;
+  margin-left: auto;
+  padding-top: 20px;
   border: 5px solid #f3f3f3;
   border-top: 5px solid #3498db;
   border-radius: 50%;
@@ -30,9 +37,14 @@
     transform: rotate(360deg);
   }
 }
-/* line 29, ../sass/leaderboards.sass */
+/* line 34, ../sass/leaderboards.sass */
 #categoriesTab {
   padding-top: 20px;
+}
+/* line 37, ../sass/leaderboards.sass */
+#categoriesTab .disabled {
+  pointer-events: none;
+  cursor: default;
 }
 
 /* line 4, ../sass/style.sass */
@@ -45,4 +57,9 @@
 /* line 9, ../sass/style.sass */
 body {
   padding: 50px;
+}
+
+/* line 12, ../sass/style.sass */
+html {
+  overflow-y: scroll;
 }
