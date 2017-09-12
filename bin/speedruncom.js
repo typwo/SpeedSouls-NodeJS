@@ -75,17 +75,15 @@ module.exports = {
                 var default_timing = game.ruleset['default-time'];
 
                 var headers = {};
-                if (default_timing === 'realtime_noloads') {
-                    headers.primary_name = 'Time';
-                } else {
-                    for (var t_1 in timings) {
-                        if (timings[t_1] === default_timing) {
-                            // Primary
-                            headers.primary_name = local_timing_methods[default_timing];
-                        } else {
-                            // Secondary (if any)
-                            headers.secondary_name = local_timing_methods[timings[t_1]];
-                        }
+                headers.default_timing = default_timing;
+                headers.game = game;
+                for (var t_1 in timings) {
+                    if (timings[t_1] === default_timing) {
+                        // Primary
+                        headers.primary_name = local_timing_methods[default_timing];
+                    } else {
+                        // Secondary (if any)
+                        headers.secondary_name = local_timing_methods[timings[t_1]];
                     }
                 }
 
@@ -109,6 +107,8 @@ module.exports = {
                         var player = json.data.players.data[r];
                         var tmp = {};
 
+                        headers.category = run;
+
                         // Rank
                         tmp.rank = run.place;
 
@@ -120,22 +120,18 @@ module.exports = {
 
                         // Primary timing method
 
-                        if (default_timing === 'realtime_noloads') {
-                            console.log(timings);
-                            tmp.primary = formatTime(run.run.times.primary_t);
-                        } else {
-                            var local_timings = timings;
-                            for (var t in local_timings) {
-                                if (local_timings[t] === default_timing) {
-                                    // Primary
-                                    tmp.primary = formatTime(run.run.times[local_timings[t] + '_t']);
-                                } else {
-                                    // Secondary (if any)
-                                    var secondary_t = run.run.times[local_timings[t] + '_t'];
-                                    tmp.secondary = formatTime(secondary_t);
-                                }
+                        var local_timings = timings;
+                        for (var t in local_timings) {
+                            if (local_timings[t] === default_timing) {
+                                // Primary
+                                tmp.primary = formatTime(run.run.times[local_timings[t] + '_t']);
+                            } else {
+                                // Secondary (if any)
+                                var secondary_t = run.run.times[local_timings[t] + '_t'];
+                                tmp.secondary = formatTime(secondary_t);
                             }
                         }
+
 
                         //Platform
                         for (var p in platforms) {
@@ -162,7 +158,7 @@ module.exports = {
 
                         // VOD
                         if (run.run.videos !== null) {
-                            tmp.video =run.run.videos.links[0].uri;
+                            tmp.video = run.run.videos.links[0].uri;
                         }
 
                         tmp.weblink = run.run.weblink;
@@ -239,5 +235,35 @@ module.exports = {
                     callback(err);
                 })
         }
+    },
+
+    findCategory: function (game, category, callback) {
+        var url = buildUrl(
+            '/games/' + game + '/categories', //category,
+            {}
+        );
+
+        var options = {
+            uri: url,
+            json: true
+        };
+
+        rp(options)
+            .then(function (json) {
+                for (var c in json.data) {
+                    if (
+                        json.data[c].id === category ||
+                        json.data[c].name === category ||
+                        json.data[c].weblink.split('#')[1] === category
+                    ) {
+                        callback(json.data[c]);
+                    }
+                }
+            })
+            .catch(function (err) {
+                // Crawling failed...
+                callback(err);
+            })
+
     }
 };

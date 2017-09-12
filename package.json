@@ -11,6 +11,7 @@
     "debug": "~2.6.3",
     "ejs": "~2.5.6",
     "express": "~4.15.2",
+    "jquery": "^3.2.1",
     "morgan": "~1.8.1",
     "node-sass-middleware": "0.9.8",
     "nodemon": "^1.12.0",
