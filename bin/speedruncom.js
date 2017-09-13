@@ -56,7 +56,7 @@ module.exports = {
         var url = buildUrl(
             '/leaderboards/' + game_id + '/category/' + category_id,
             {
-                //'top': 100,
+                //'top': 50,
                 'embed': 'players,game,variables,platforms'
             }
         );
@@ -64,6 +64,8 @@ module.exports = {
             uri: url,
             json: true
         };
+
+        console.log(url);
 
         rp(options)
             .then(function (json) {
@@ -169,7 +171,7 @@ module.exports = {
 
                         // VOD
                         if (run.run.videos !== null) {
-                            if (run.run.videos.links.length === 1) {
+                            if (run.run.videos.links !== undefined && run.run.videos.links.length === 1) {
                                 tmp.video = run.run.videos.links[0].uri;
                             } else {
                                 tmp.video = run.run.weblink;

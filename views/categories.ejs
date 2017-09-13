@@ -1,4 +1,10 @@
-<ul class="nav nav-tabs" id="categoriesTab" role="tablist" data-game-id="<%= game_id %>" data-default-category="<%= default_category %>">
+<ul
+        class="nav nav-tabs"
+        id="categoriesTab"
+        role="tablist"
+        data-game-abbreviation="<%= game_abbreviation %>"
+        data-game-id="<%= game_id %>"
+        data-default-category="<%= default_category %>">
     <%
     for (var c in categories) {
         if (categories[c].misc === false) { %>

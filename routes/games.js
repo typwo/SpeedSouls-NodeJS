@@ -37,35 +37,47 @@ router.get('/:game', function (req, res, next) {
         }
     }
 
-    if (game === false) {
-        res.render('leaderboards', {title: 'Game not found', game_id: '', categories: []});
-    }
+    console.log(game);
 
-    speedruncom.findGame(game, function (game) {
-        var categories = [];
+    if (!game) {
+        res.render('leaderboards', {
+            title: 'Game not found',
+            game_id: '',
+            game_abbreviation: '',
+            categories: [],
+            default_category: '',
+            games: []
+        });
+        res.stop();
+    } else {
+        speedruncom.findGame('botw', function (game) {
+            var categories = [];
 
-        if (game) {
-            for (var c in game.categories.data) {
-                if (game.categories.data.hasOwnProperty(c)) {
-                    var category = game.categories.data[c];
-                    if (category.type === 'per-game') {
-                        categories[category.id] = {
-                            name: category.name,
-                            misc: category.miscellaneous,
-                            abbreviation: category.weblink.split('#')[1]
+            if (game) {
+                for (var c in game.categories.data) {
+                    if (game.categories.data.hasOwnProperty(c)) {
+                        var category = game.categories.data[c];
+                        if (category.type === 'per-game') {
+                            categories[category.id] = {
+                                name: category.name,
+                                misc: category.miscellaneous,
+                                abbreviation: category.weblink.split('#')[1]
+                            }
                         }
                     }
                 }
+
+                res.render('leaderboards', {
+                    title: game.names.international,
+                    game_id: game.id,
+                    game_abbreviation: game.abbreviation,
+                    categories: categories,
+                    default_category: game.categories.data[0].weblink.split('#')[1],
+                    games: soulsgames
+                });
             }
-            res.render('leaderboards', {
-                title: game.names.international,
-                game_id: game.id,
-                categories: categories,
-                default_category: game.categories.data[0].weblink.split('#')[1],
-                games: soulsgames
-            });
-        }
-    });
+        });
+    }
 });
 
 module.exports = router;

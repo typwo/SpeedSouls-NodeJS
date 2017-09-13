@@ -1,11 +1,12 @@
 $(document).ready(function () {
+    // ----------------------------------  FUNCTIONS  ---------------------------------- //
+    /**
+     * The function that actually builds the HTML and fill the leaderboards div
+     */
     function _updateLeaderboards(leaderboards_data, bugged_number, callback) {
-        // Loading spinner
-
         // Get the main leaderboards div
         var div = $('#leaderboards');
 
-        // Replace the content by the spinner
         // Console names
         var consoles = {
             'PlayStation 4': 'PS4',
@@ -19,6 +20,7 @@ $(document).ready(function () {
         // Font-awesome video icon
         var faw_video = '<i class="fa fa-video-camera" aria-hidden="true"></i>';
 
+        // Creates the naim table
         var table = $('<table></table>').addClass('table table-sm table-hover');
 
         // header
@@ -28,6 +30,7 @@ $(document).ready(function () {
             $($('<th></th>').text(leaderboards_data.headers.primary_name))
         );
 
+        // Second timing method
         if (leaderboards_data.headers.secondary_name !== undefined) {
             thead.append(
                 $($('<th></th>').text(leaderboards_data.headers.secondary_name))
@@ -48,8 +51,10 @@ $(document).ready(function () {
             $($('<th></th>').text('VOD'))
         );
 
+        // Appends the head tp the table
         table.append(thead);
 
+        // tbody
         var tbody = $('<tbody></tbody>');
         if (leaderboards_data.runs.length > 0) {
             for (var r in leaderboards_data.runs) {
@@ -62,6 +67,7 @@ $(document).ready(function () {
                 var players_output = [];
                 for (var p in run.players) {
                     var player = run.players[p];
+                    // If has an account
                     if (player.weblink !== '') {
                         var element = $('<a></a>').addClass('player-weblink').attr(
                             {
@@ -69,21 +75,27 @@ $(document).ready(function () {
                                 'target': '_blank'
                             }
                         ).text(player.name);
+                        // Gets the HTML so we can players_output.join() later
                         var html = $("<div />").append($(element).clone()).html();
                         players_output.push(html);
-                    } else {
+                    }
+                    // Guest
+                    else {
                         players_output.push(player.name)
                     }
                 }
 
+                // Appends the player(s)
                 row.append(
                     $('<td></td>').append(
                         players_output.join(' & ')
                     )
                 );
 
-
-                // BUG FIX
+                /**
+                 * If the category is using RTA No load and the run doesn't have a primary time, then we use the
+                 * secondary value as the primary one
+                 */
                 if (
                     leaderboards_data.headers.default_timing === 'realtime_noloads' &&
                     run.primary === "" &&
@@ -95,16 +107,22 @@ $(document).ready(function () {
                     row.append(
                         $('<td></td>').text("")
                     );
-                } else {
+                }
+                // Show the times normally
+                else {
                     row.append(
                         $('<td></td>').text(run.primary)
                     );
 
-                    row.append(
-                        $('<td></td>').text(run.secondary)
-                    );
+                    // Second timing method
+                    if (leaderboards_data.headers.secondary_name !== undefined) {
+                        row.append(
+                            $('<td></td>').text(run.secondary)
+                        );
+                    }
                 }
 
+                // Variables
                 for (var variable_i in leaderboards_data.variables) {
                     if (leaderboards_data.variables.hasOwnProperty(variable_i)) {
                         row.append(
@@ -113,6 +131,7 @@ $(document).ready(function () {
                     }
                 }
 
+                // Platform
                 if (consoles[run.platform] !== undefined) {
                     row.append(
                         $('<td></td>').attr('title', run.platform).text(consoles[run.platform])
@@ -123,6 +142,7 @@ $(document).ready(function () {
                     );
                 }
 
+                // VOD
                 if (run.video === undefined) {
                     row.append(
                         $('<td></td>').text(' ')
@@ -135,28 +155,33 @@ $(document).ready(function () {
                     row.attr('data-video', run.video);
                 }
 
+                // Append the row to the body
                 tbody.append(row);
             }
-        } else {
+        }
+        // No runs
+        else {
             var colspan = $(thead).children('th').length;
-            // No runs
             tbody.append(
                 $('<td></td>').attr('colspan', colspan).addClass('empty-row').text(
                     'There is no runs.'
                 )
             );
         }
+
+        // Append everything together
         table.append(tbody);
         div.empty();
         div.append(table);
+
+        // We're done m8
         callback();
     }
 
     /**
-     * BUILDS THE LEADERBOARDS
-     * From a game and a category
+     * Returns the leaderboards data from our own API
      */
-    function updateLeaderboards(game_id, category_id, callback) {
+    function getLeaderboards(game_id, category_id, callback) {
         // Url Params
         var params = {
             game: game_id,
@@ -164,28 +189,57 @@ $(document).ready(function () {
         };
         var url = '/api/leaderboards?' + $.param(params);
         // Get leaderboards for the category
+
         $.getJSON(url, function (leaderboards_data) {
+            callback(leaderboards_data);
+        });
+    }
+
+    /**
+     * Updates the leaderboards
+     */
+    function updateLeaderboards(game_id, category_id, default_category_id, callback) {
+        // Gets the leaderads
+        getLeaderboards(game_id, category_id, function (leaderboards_data) {
+            // If category not found, we use the default category
+            if (leaderboards_data.statusCode === 404) {
+                // Gets the leaderboards again
+                getLeaderboards(game_id, default_category_id, function (default_leaderboards) {
+                    // Keeps going
+                    x(default_leaderboards, callback);
+                })
+            } else {
+                // Keeps going
+                x(leaderboards_data, callback);
+            }
+        });
+
+        function x(l, l_callback) {
             /**
              * SPEEDRUN.COM BUG
              * Get the amount of runs on the leaderboards using the correct primary timing method
              */
-            if (leaderboards_data.headers.default_timing === "realtime_noloads") {
+
+            // Bug only present on RTA no loads leaderboards
+            if (l.headers.default_timing === "realtime_noloads") {
                 // Get the category DATA from our own API
                 getSpeedrunComCategoryNoLoadRunsNumber(
-                    leaderboards_data.headers.game.abbreviation,
+                    l.headers.game.abbreviation,
                     category_id,
                     function (bugged_total_no_load_runs) {
-                        _updateLeaderboards(leaderboards_data, bugged_total_no_load_runs, function () {
-                            callback();
+                        // Builds the HTML
+                        _updateLeaderboards(l, bugged_total_no_load_runs, function () {
+                            l_callback();
                         });
                     }
                 );
             } else {
-                _updateLeaderboards(leaderboards_data, 0, function () {
-                    callback();
+                // Builds the HTML
+                _updateLeaderboards(l, 0, function () {
+                    l_callback();
                 });
             }
-        });
+        }
     }
 
     /**
@@ -229,13 +283,25 @@ $(document).ready(function () {
         })
     }
 
-
+    /**
+     * Update the category tabs and call the functions to update the leaderboards
+     */
     function updateCategory(div_categories, game_id, id_or_abbreviation) {
+        // Default category
+        var default_category_id = category_select.attr('data-default-category');
+
         // Find the new tab
         var category = div_categories.find(
             "a[data-category-id='" + id_or_abbreviation + "'], " +
             "a[data-abbreviation='" + id_or_abbreviation + "']"
         );
+
+        // If tab not found, use the default
+        if(category.length === 0) {
+            category = div_categories.find(
+                "a[data-abbreviation='" + default_category_id + "']"
+            );
+        }
 
         // If category not already selected
         if (!category.hasClass('active')) {
@@ -266,8 +332,8 @@ $(document).ready(function () {
             }
 
             // Updates the leaderboards
-            updateLeaderboards(game_id, id_or_abbreviation, function () {
-                // Enable categories buttons
+            updateLeaderboards(game_id, id_or_abbreviation, default_category_id, function () {
+                // When the leaderboards are updated, we enable categories buttons again
                 div_categories.find('li.nav-category, li.dropdown').each(function () {
                     $(this).find('a').removeClass('disabled');
                 });
@@ -275,27 +341,36 @@ $(document).ready(function () {
         }
     }
 
+    // ----------------------------------  ON LOAD  ---------------------------------- //
 
     // On load
     var category_select = $('#categoriesTab');
-    var game_id = category_select.attr('data-game-id');
+    var game_id = category_select.attr('data-game-abbreviation');
     var default_category_id = category_select.attr('data-default-category');
 
-
+    // If category in the URL
     if (window.location.hash) {
         default_category_id = window.location.hash.replace('#', '');
     }
+
+    // Update the category
     updateCategory(category_select, game_id, default_category_id);
 
+
+
+    // ----------------------------------  EVENTS  ---------------------------------- //
+    // When a row / run is clicked
     $(document).on('click', 'div#leaderboards table tr', function () {
         window.open($(this).attr('data-video'), '_blank');
     });
 
+    // When the player's name is clicked
     $(document).on('click', '.player-weblink', function (e) {
+        // Prevents the row on click to trigger
         e.stopPropagation();
     });
 
-    // Categories select
+    // When category is changed
     $('ul#categoriesTab .category').on('click', function () {
         updateCategory(category_select, game_id, $(this).attr('data-abbreviation'));
     });
