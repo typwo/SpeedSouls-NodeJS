@@ -50,7 +50,8 @@ router.get('/:game', function (req, res, next) {
         });
         res.stop();
     } else {
-        speedruncom.findGame('botw', function (game) {
+        // TODO Remove hard coded game
+        speedruncom.findGame('dyinglight', function (game) {
             var categories = [];
 
             if (game) {
@@ -67,12 +68,18 @@ router.get('/:game', function (req, res, next) {
                     }
                 }
 
+                var default_category;
+                for (var c in categories) {
+                    default_category = categories[c].abbreviation;
+                    break;
+                }
+
                 res.render('leaderboards', {
                     title: game.names.international,
                     game_id: game.id,
                     game_abbreviation: game.abbreviation,
                     categories: categories,
-                    default_category: game.categories.data[0].weblink.split('#')[1],
+                    default_category: default_category,
                     games: soulsgames
                 });
             }

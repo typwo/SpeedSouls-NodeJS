@@ -89,27 +89,17 @@ module.exports = {
                     }
                 }
 
-
                 // Variables
-                var variables = {};
-                for (var v in json.data.variables.data) {
-                    if (json.data.variables.data.hasOwnProperty(v)) {
-                        var variable = json.data.variables.data[v];
-                        if (variable['is-subcategory'] === false) {
-                            variables[variable.id] = variable.name;
-                        }
-                    }
-                }
+                var variables = json.data.variables.data;
 
                 // Runs
                 var runs = [];
                 for (var r in json.data.runs) {
                     if (json.data.runs.hasOwnProperty(r)) {
                         var run = json.data.runs[r];
-                        var player = json.data.players.data[r];
                         var tmp = {};
 
-                        headers.category = run;
+                        // headers.category = run;
 
                         // Rank
                         tmp.rank = run.place;
@@ -155,19 +145,21 @@ module.exports = {
                         }
 
                         // Variables
-                        for (var index in run.run.values) {
-                            if (run.run.values.hasOwnProperty(index)) {
-                                var value = run.run.values[index];
-                                for (var jindex in json.data.variables.data) {
-                                    if (json.data.variables.data.hasOwnProperty(jindex)) {
-                                        variable = json.data.variables.data[jindex];
-                                        if (variable.id === index && index in variables) {
-                                            tmp[variable.id] = variable.values.values[value].label;
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                        tmp.variables = run.run.values;
+                        // for (var index in run.run.values) {
+                        //     if (run.run.values.hasOwnProperty(index)) {
+                        //         var value = run.run.values[index];
+                        //         for (var jindex in variables) {
+                        //             tmp.anus = run.run.values;
+                        //             // if (variables.hasOwnProperty(jindex)) {
+                        //             //     variable = variablesdata[jindex];
+                        //             //     if (variable.id === index && index in variables) {
+                        //             //         tmp[variable.id] = variable.values.values[value].label;
+                        //             //     }
+                        //             // }
+                        //         }
+                        //     }
+                        // }
 
                         // VOD
                         if (run.run.videos !== null) {
@@ -251,6 +243,7 @@ module.exports = {
                 })
                 .catch(function (err) {
                     // Crawling failed...
+                    console.log(err);
                     callback(err);
                 })
         }

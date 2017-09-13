@@ -37,11 +37,19 @@
     transform: rotate(360deg);
   }
 }
-/* line 34, ../sass/leaderboards.sass */
+/* line 35, ../sass/leaderboards.sass */
+#leaderboards .sub-categories-div .dropdown {
+  float: left;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-right: 10px;
+}
+
+/* line 42, ../sass/leaderboards.sass */
 #categoriesTab {
   padding-top: 20px;
 }
-/* line 37, ../sass/leaderboards.sass */
+/* line 45, ../sass/leaderboards.sass */
 #categoriesTab .disabled {
   pointer-events: none;
   cursor: default;
@@ -58,8 +66,12 @@
 body {
   padding: 50px;
 }
-
 /* line 12, ../sass/style.sass */
+body .navbar {
+  border-bottom: 1px solid #e9ecef;
+}
+
+/* line 15, ../sass/style.sass */
 html {
   overflow-y: scroll;
 }

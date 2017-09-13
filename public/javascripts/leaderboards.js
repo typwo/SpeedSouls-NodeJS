@@ -4,8 +4,47 @@ $(document).ready(function () {
      * The function that actually builds the HTML and fill the leaderboards div
      */
     function _updateLeaderboards(leaderboards_data, bugged_number, callback) {
-        // Get the main leaderboards div
-        var div = $('#leaderboards');
+        var div = $('<div></div>');
+        if (leaderboards_data.variables.length > 0) {
+            var sub_category_div = $('<div></div>').addClass('sub-categories-div');
+            for (var i in leaderboards_data.variables) {
+                var scategory = leaderboards_data.variables[i];
+                if (scategory['is-subcategory']) {
+
+                    var sub_categories_list = $('<div></div>').addClass('dropdown-menu').attr('aria-labelledby', 'dropdownMenuButton');
+                    for (var ayylmao in scategory.values.values) {
+                        sub_categories_list.append(
+                            $('<a></a>').addClass('dropdown-item').attr(
+                                {
+                                    'data-subcategory-id': ayylmao,
+                                    'href': '#'
+                                }
+                            ).text(
+                                scategory.values.values[ayylmao].label
+                            )
+                        )
+                    }
+
+                    var sub_category_select = $('<div></div>')
+                        .addClass('dropdown')
+                        .append(
+                            $('<button></button>').addClass('btn btn-secondary dropdown-toggle').attr({
+                                'id': 'dropdownMenuButton',
+                                'aria-haspopup': "true",
+                                'aria-expanded': "false",
+                                'type': 'button',
+                                'data-toggle': 'dropdown'
+                            }).text(
+                                scategory.name
+                            ).append(
+                                sub_categories_list
+                            )
+                        );
+                    sub_category_div.append(sub_category_select);
+                }
+            }
+            div.append(sub_category_div);
+        }
 
         // Console names
         var consoles = {
@@ -39,9 +78,9 @@ $(document).ready(function () {
 
         // Variables
         for (var variable_i in leaderboards_data.variables) {
-            if (leaderboards_data.variables.hasOwnProperty(variable_i)) {
+            if (!leaderboards_data.variables[variable_i]['is-subcategory']) {
                 thead.append(
-                    $($('<th></th>').text(leaderboards_data.variables[variable_i]))
+                    $($('<th></th>').text(leaderboards_data.variables[variable_i].name))
                 );
             }
         }
@@ -93,6 +132,7 @@ $(document).ready(function () {
                 );
 
                 /**
+                 * SPEEDRUN.COM BUG FIX
                  * If the category is using RTA No load and the run doesn't have a primary time, then we use the
                  * secondary value as the primary one
                  */
@@ -123,11 +163,24 @@ $(document).ready(function () {
                 }
 
                 // Variables
-                for (var variable_i in leaderboards_data.variables) {
-                    if (leaderboards_data.variables.hasOwnProperty(variable_i)) {
-                        row.append(
-                            $('<td></td>').text(run[variable_i])
-                        );
+                for (var var_global_i in leaderboards_data.variables) {
+                    for (var var_run_i in run.variables) {
+                        if (
+                            !leaderboards_data.variables[var_global_i]['is-subcategory'] &&
+                            leaderboards_data.variables[var_global_i].id === var_run_i
+                        ) {
+                            var var_label = '';
+                            for (var value in leaderboards_data.variables[var_global_i].values.values) {
+                                if (run.variables[var_run_i] === value) {
+                                    var_label = leaderboards_data.variables[var_global_i].values.values[value].label;
+                                }
+                            }
+                            row.append(
+                                $('<td></td>').text(
+                                    var_label
+                                )
+                            );
+                        }
                     }
                 }
 
@@ -164,18 +217,17 @@ $(document).ready(function () {
             var colspan = $(thead).children('th').length;
             tbody.append(
                 $('<td></td>').attr('colspan', colspan).addClass('empty-row').text(
-                    'There is no runs.'
+                    'There are no runs.'
                 )
             );
         }
 
         // Append everything together
         table.append(tbody);
-        div.empty();
         div.append(table);
 
         // We're done m8
-        callback();
+        callback(div);
     }
 
     /**
@@ -198,27 +250,15 @@ $(document).ready(function () {
     /**
      * Updates the leaderboards
      */
-    function updateLeaderboards(game_id, category_id, default_category_id, callback) {
+    function updateLeaderboards(game_id, category_id, callback) {
         // Gets the leaderads
         getLeaderboards(game_id, category_id, function (leaderboards_data) {
-            // If category not found, we use the default category
-            if (leaderboards_data.statusCode === 404) {
-                // Gets the leaderboards again
-                getLeaderboards(game_id, default_category_id, function (default_leaderboards) {
-                    // Keeps going
-                    x(default_leaderboards, callback);
-                })
-            } else {
-                // Keeps going
-                x(leaderboards_data, callback);
-            }
-        });
-
-        function x(l, l_callback) {
             /**
              * SPEEDRUN.COM BUG
              * Get the amount of runs on the leaderboards using the correct primary timing method
              */
+
+            var l = leaderboards_data;
 
             // Bug only present on RTA no loads leaderboards
             if (l.headers.default_timing === "realtime_noloads") {
@@ -228,18 +268,18 @@ $(document).ready(function () {
                     category_id,
                     function (bugged_total_no_load_runs) {
                         // Builds the HTML
-                        _updateLeaderboards(l, bugged_total_no_load_runs, function () {
-                            l_callback();
+                        _updateLeaderboards(l, bugged_total_no_load_runs, function (table) {
+                            callback(table);
                         });
                     }
                 );
             } else {
                 // Builds the HTML
-                _updateLeaderboards(l, 0, function () {
-                    l_callback();
+                _updateLeaderboards(l, 0, function (table) {
+                    callback(table);
                 });
             }
-        }
+        });
     }
 
     /**
@@ -297,10 +337,11 @@ $(document).ready(function () {
         );
 
         // If tab not found, use the default
-        if(category.length === 0) {
+        if (category.length === 0) {
             category = div_categories.find(
                 "a[data-abbreviation='" + default_category_id + "']"
             );
+            id_or_abbreviation = default_category_id;
         }
 
         // If category not already selected
@@ -309,7 +350,6 @@ $(document).ready(function () {
             div_categories.find('li.nav-category, li.dropdown').each(function () {
                 $(this).find('a').addClass('disabled');
             });
-
 
             function getSpinner() {
                 return $('<div></div>').addClass('loader');
@@ -323,7 +363,6 @@ $(document).ready(function () {
             });
             div_categories.find('.dropdown-toggle').removeClass('active');
 
-
             // Activate the tab
             category.addClass('active');
             // Activate the misc tab if needed
@@ -332,7 +371,8 @@ $(document).ready(function () {
             }
 
             // Updates the leaderboards
-            updateLeaderboards(game_id, id_or_abbreviation, default_category_id, function () {
+            updateLeaderboards(game_id, id_or_abbreviation, function (table) {
+                $('#leaderboards').html(table);
                 // When the leaderboards are updated, we enable categories buttons again
                 div_categories.find('li.nav-category, li.dropdown').each(function () {
                     $(this).find('a').removeClass('disabled');
@@ -355,8 +395,6 @@ $(document).ready(function () {
 
     // Update the category
     updateCategory(category_select, game_id, default_category_id);
-
-
 
     // ----------------------------------  EVENTS  ---------------------------------- //
     // When a row / run is clicked
