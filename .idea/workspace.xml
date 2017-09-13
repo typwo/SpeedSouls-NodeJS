@@ -38,25 +38,25 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="games.js" pinned="false" current-in-tab="false">
+      <file leaf-file-name="games.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/routes/games.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="378">
-              <caret line="69" column="0" lean-forward="true" selection-start-line="69" selection-start-column="0" selection-end-line="69" selection-end-column="0" />
+            <state relative-caret-position="188">
+              <caret line="53" column="33" lean-forward="false" selection-start-line="53" selection-start-column="33" selection-end-line="53" selection-end-column="33" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="leaderboards.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="leaderboards.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/public/javascripts/leaderboards.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="186">
-              <caret line="368" column="37" lean-forward="true" selection-start-line="368" selection-start-column="37" selection-end-line="368" selection-end-column="37" />
+            <state relative-caret-position="596">
+              <caret line="185" column="26" lean-forward="false" selection-start-line="185" selection-start-column="26" selection-end-line="185" selection-end-column="26" />
               <folding>
-                <element signature="e#9031#9366#0" expanded="false" />
-                <element signature="e#9480#10630#0" expanded="false" />
-                <element signature="e#11160#12098#0" expanded="false" />
+                <element signature="e#9115#9450#0" expanded="false" />
+                <element signature="e#9564#10714#0" expanded="false" />
+                <element signature="e#11244#12182#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -158,8 +158,8 @@
         <option value="$PROJECT_DIR$/bin/speedruncom.js" />
         <option value="$PROJECT_DIR$/views/categories.ejs" />
         <option value="$PROJECT_DIR$/public/sass/style.sass" />
-        <option value="$PROJECT_DIR$/routes/games.js" />
         <option value="$PROJECT_DIR$/public/javascripts/leaderboards.js" />
+        <option value="$PROJECT_DIR$/routes/games.js" />
       </list>
     </option>
   </component>
@@ -181,7 +181,7 @@
   <component name="NodeModulesDirectoryManager">
     <handled-path value="$PROJECT_DIR$/node_modules" />
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
+  <component name="ProjectFrameBounds" extendedState="7">
     <option name="x" value="405" />
     <option name="y" value="-8" />
     <option name="width" value="960" />
@@ -308,15 +308,15 @@
       <workItem from="1505214789799" duration="12593000" />
       <workItem from="1505232541735" duration="15551000" />
       <workItem from="1505282476345" duration="10497000" />
-      <workItem from="1505317857357" duration="15330000" />
+      <workItem from="1505317857357" duration="16824000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="115349000" />
+    <option name="totallyTimeSpent" value="116843000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="7" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.21970496" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -702,23 +702,23 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/routes/games.js">
+    <entry file="file://$PROJECT_DIR$/public/javascripts/leaderboards.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="378">
-          <caret line="69" column="0" lean-forward="true" selection-start-line="69" selection-start-column="0" selection-end-line="69" selection-end-column="0" />
-          <folding />
+        <state relative-caret-position="596">
+          <caret line="185" column="26" lean-forward="false" selection-start-line="185" selection-start-column="26" selection-end-line="185" selection-end-column="26" />
+          <folding>
+            <element signature="e#9115#9450#0" expanded="false" />
+            <element signature="e#9564#10714#0" expanded="false" />
+            <element signature="e#11244#12182#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/public/javascripts/leaderboards.js">
+    <entry file="file://$PROJECT_DIR$/routes/games.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="186">
-          <caret line="368" column="37" lean-forward="true" selection-start-line="368" selection-start-column="37" selection-end-line="368" selection-end-column="37" />
-          <folding>
-            <element signature="e#9031#9366#0" expanded="false" />
-            <element signature="e#9480#10630#0" expanded="false" />
-            <element signature="e#11160#12098#0" expanded="false" />
-          </folding>
+        <state relative-caret-position="188">
+          <caret line="53" column="33" lean-forward="false" selection-start-line="53" selection-start-column="33" selection-end-line="53" selection-end-column="33" />
+          <folding />
         </state>
       </provider>
     </entry>
