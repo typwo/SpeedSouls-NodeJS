@@ -237,12 +237,23 @@ $(document).ready(function () {
     /**
      * Returns the leaderboards data from our own API
      */
-    function getLeaderboards(game_id, category_id, callback) {
+    function getLeaderboards(game_id, category_id, sub_category, callback) {
         // Url Params
         var params = {
             game: game_id,
             category: category_id
         };
+
+        console.log(sub_category);
+        if (sub_category !== {}) {
+            var query = []
+            for (var subc in sub_category) {
+                query.push('var-' + subc + '='  + sub_category[subc]);
+            }
+
+            params['vars'] = query.join(',');
+        }
+
         var url = '/api/leaderboards?' + $.param(params);
         // Get leaderboards for the category
 
@@ -254,9 +265,9 @@ $(document).ready(function () {
     /**
      * Updates the leaderboards
      */
-    function updateLeaderboards(game_id, category_id, callback) {
+    function updateLeaderboards(game_id, category_id, sub_category, callback) {
         // Gets the leaderads
-        getLeaderboards(game_id, category_id, function (leaderboards_data) {
+        getLeaderboards(game_id, category_id, sub_category, function (leaderboards_data) {
             /**
              * SPEEDRUN.COM BUG
              * Get the amount of runs on the leaderboards using the correct primary timing method
@@ -328,6 +339,69 @@ $(document).ready(function () {
     }
 
     /**
+     * Builds the sub categories selects
+     */
+    function buildSubCategoriesSelects(game_id, id_or_abbreviation, callback) {
+            url = '/api/games/' + game_id + '/category/' + id_or_abbreviation;
+            console.log(url);
+            $.getJSON(url, function (data) {
+                var output = {};
+
+                console.log(data);
+                if (data.variables !== {}) {
+                    var sub_categories = {};
+                    var sub_category_div = $('<div></div>').addClass('sub-categories-div');
+                    for (var i in data.variables.data) {
+                        var scategory = data.variables.data[i];
+                        if (scategory['is-subcategory']) {
+
+                            var sub_categories_list = $('<div></div>').addClass('dropdown-menu').attr('aria-labelledby', 'dropdownMenuButton');
+                            for (var ayylmao in scategory.values.values) {
+                                var classes = 'dropdown-item';
+                                if (ayylmao === scategory.values.default) {
+                                    classes += ' active';
+                                }
+                                sub_categories_list.append(
+                                    $('<a></a>').addClass(classes).attr(
+                                        {
+                                            'data-subcategory-id': ayylmao,
+                                            'href': '#'
+                                        }
+                                    ).text(
+                                        scategory.values.values[ayylmao].label
+                                    )
+                                )
+                            }
+
+                            var sub_category_select = $('<div></div>')
+                                .addClass('dropdown')
+                                .append(
+                                    $('<button></button>').addClass('btn btn-secondary dropdown-toggle').attr({
+                                        'id': 'dropdownMenuButton',
+                                        'aria-haspopup': "true",
+                                        'aria-expanded': "false",
+                                        'type': 'button',
+                                        'data-toggle': 'dropdown'
+                                    }).text(
+                                        scategory.name
+                                    ).append(
+                                        sub_categories_list
+                                    )
+                                );
+                            sub_category_div.append(sub_category_select);
+
+                            sub_categories[scategory.id] = scategory.values.default;
+                        }
+                    }
+                    output.sub_category = sub_categories;
+                    output.html = sub_category_div;
+
+                }
+                callback(output);
+            })
+
+    }
+    /**
      * Update the category tabs and call the functions to update the leaderboards
      */
     function updateCategory(div_categories, game_id, id_or_abbreviation) {
@@ -374,12 +448,25 @@ $(document).ready(function () {
                 div_categories.find('.dropdown-toggle').addClass('active');
             }
 
-            // Updates the leaderboards
-            updateLeaderboards(game_id, id_or_abbreviation, function (table) {
-                $('#leaderboards').html(table);
-                // When the leaderboards are updated, we enable categories buttons again
-                div_categories.find('li.nav-category, li.dropdown').each(function () {
-                    $(this).find('a').removeClass('disabled');
+            buildSubCategoriesSelects(game_id, id_or_abbreviation, function (data) {
+                console.log(data);
+                var sub_category_html;
+                var sub_category;
+                if (data !== null) {
+                    sub_category = data.sub_category;
+                    sub_category_html = data.html;
+                }
+
+                // Updates the leaderboards
+                updateLeaderboards(game_id, id_or_abbreviation, sub_category, function (table) {
+                    $('#leaderboards').empty().append(
+                        sub_category_html,
+                        table
+                    );
+                    // When the leaderboards are updated, we enable categories buttons again
+                    div_categories.find('li.nav-category, li.dropdown').each(function () {
+                        $(this).find('a').removeClass('disabled');
+                    });
                 });
             });
         }

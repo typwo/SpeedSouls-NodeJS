@@ -52,13 +52,29 @@ function buildUrl(url, params) {
 }
 
 module.exports = {
-    getLeaderboards: function (game_id, category_id, callback) {
+    getLeaderboards: function (game_id, category_id, vars, callback) {
+        var params = {
+            //'top': 50,
+            'embed': 'players,game,variables,platforms'
+        };
+
+        if (vars !== {}) {
+            var splits = vars.split(',');
+            console.log(splits);
+            for (var s in splits) {
+                var subsplits = splits[s].split('=');
+                console.log(subsplits);
+                for (var ss in subsplits) {
+                    params[subsplits[0]] = subsplits[1];
+                }
+            }
+        }
+
+        console.log(params);
+
         var url = buildUrl(
             '/leaderboards/' + game_id + '/category/' + category_id,
-            {
-                //'top': 50,
-                'embed': 'players,game,variables,platforms'
-            }
+            params
         );
         var options = {
             uri: url,

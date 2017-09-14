@@ -51,7 +51,7 @@ router.get('/:game', function (req, res, next) {
         res.stop();
     } else {
         // TODO Remove hard coded game
-        speedruncom.findGame('botw', function (game) {
+        speedruncom.findGame(game, function (game) {
             var categories = [];
 
             if (game) {
