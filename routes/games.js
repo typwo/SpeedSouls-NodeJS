@@ -37,8 +37,6 @@ router.get('/:game', function (req, res, next) {
         }
     }
 
-    console.log(game);
-
     if (!game) {
         res.render('leaderboards', {
             title: 'Game not found',
@@ -51,7 +49,7 @@ router.get('/:game', function (req, res, next) {
         res.stop();
     } else {
         // TODO Remove hard coded game
-        speedruncom.findGame(game, function (game) {
+        speedruncom.findGame('botw', function (game) {
             var categories = [];
 
             if (game) {
@@ -73,8 +71,6 @@ router.get('/:game', function (req, res, next) {
                     default_category = categories[c].abbreviation;
                     break;
                 }
-
-                console.log(game.variables.data);
 
                 res.render('leaderboards', {
                     title: game.names.international,

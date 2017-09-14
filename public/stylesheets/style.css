@@ -18,7 +18,7 @@
 }
 /* line 16, ../sass/leaderboards.sass */
 #leaderboards .loader {
-  margin-top: 40px;
+  margin-top: 10px;
   margin-right: auto;
   margin-left: auto;
   padding-top: 20px;
@@ -38,18 +38,17 @@
   }
 }
 /* line 35, ../sass/leaderboards.sass */
-.sub-categories-div .dropdown {
-  float: left;
-  padding-top: 10px;
-  padding-bottom: 10px;
-  padding-right: 10px;
+.sub-categories-div select {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-right: 10px;
 }
 
-/* line 42, ../sass/leaderboards.sass */
+/* line 41, ../sass/leaderboards.sass */
 #categoriesTab {
   padding-top: 20px;
 }
-/* line 45, ../sass/leaderboards.sass */
+/* line 44, ../sass/leaderboards.sass */
 #categoriesTab .disabled {
   pointer-events: none;
   cursor: default;

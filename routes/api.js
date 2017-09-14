@@ -11,7 +11,6 @@ var cache_value = '10 minutes';
 /* GET home page. */
 router.get('/leaderboards', cache(cache_value), function(req, res, next) {
     query = url.parse(req.url, true).query;
-    console.log(query);
     var game = query.game === undefined ? false : query.game;
     var category = query.category === undefined ? false : query.category;
     var vars = query.vars === undefined ? false : query.vars;

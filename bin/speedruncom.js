@@ -60,17 +60,13 @@ module.exports = {
 
         if (vars !== {}) {
             var splits = vars.split(',');
-            console.log(splits);
             for (var s in splits) {
                 var subsplits = splits[s].split('=');
-                console.log(subsplits);
                 for (var ss in subsplits) {
                     params[subsplits[0]] = subsplits[1];
                 }
             }
         }
-
-        console.log(params);
 
         var url = buildUrl(
             '/leaderboards/' + game_id + '/category/' + category_id,
@@ -80,8 +76,6 @@ module.exports = {
             uri: url,
             json: true
         };
-
-        console.log(url);
 
         rp(options)
             .then(function (json) {
@@ -292,7 +286,9 @@ module.exports = {
                     }
                 }
                 if (!found) {
-                    callback({data: {}});
+                    callback({
+                        data: 404
+                    });
                 }
             })
             .catch(function (err) {
