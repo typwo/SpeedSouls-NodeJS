@@ -197,7 +197,7 @@ module.exports = {
             '/games',
             {
                 'name': game_name,
-                'embed': 'categories'
+                'embed': 'categories,variables'
             }
         );
 
@@ -252,7 +252,9 @@ module.exports = {
     findCategory: function (game, category, callback) {
         var url = buildUrl(
             '/games/' + game + '/categories', //category,
-            {}
+            {
+                'embed': 'variables'
+            }
         );
 
         var options = {
@@ -262,14 +264,19 @@ module.exports = {
 
         rp(options)
             .then(function (json) {
+                var found = false;
                 for (var c in json.data) {
                     if (
                         json.data[c].id === category ||
                         json.data[c].name === category ||
                         json.data[c].weblink.split('#')[1] === category
                     ) {
+                        found = true;
                         callback(json.data[c]);
                     }
+                }
+                if (!found) {
+                    callback({data: {}});
                 }
             })
             .catch(function (err) {

@@ -1,13 +1,22 @@
+<%
+var at_least_one_misc = false;
+for (var c in categories) {
+    if (categories[c].misc === true) {
+        at_least_one_misc = true;
+    }
+}
+%>
 <ul
         class="nav nav-tabs"
         id="categoriesTab"
         role="tablist"
         data-game-abbreviation="<%= game_abbreviation %>"
         data-game-id="<%= game_id %>"
-        data-default-category="<%= default_category %>">
+        data-default-category="<%= default_category %>"
+        data-has-subcategories=<%= at_least_one_misc %>
+>
     <%
-    var at_least_one_misc = false;
-            for (var c in categories) {
+    for (var c in categories) {
     if (categories[c].misc === false) { %>
     <li class="nav-item nav-category">
         <a
@@ -20,10 +29,8 @@
         </a>
     </li>
     <%
-    } else {
-        at_least_one_misc = true;
-    } // End if
-    } // End for
+    }
+    }
 
     if (at_least_one_misc) {
     %>
@@ -45,8 +52,36 @@
                 <%= categories[c].name %>
             </a>
             <% }
-            }%>
+            } %>
         </div>
     </li>
-    <%}%>
+    <% } %>
 </ul>
+
+<% if (variables.length > 0) { %>
+<div class="sub-categories-div">
+    <% for (var v in variables) {
+        var variable = variables[v];
+    if (variable['is-subcategory']) {
+    %>
+    <div class="dropdown">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
+            <%= variable.name %>
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <% for (var value in variable.values.values) { %>
+            <a
+                    class="dropdown-item<% if (value === variable.values.default) { %> active<% } %>"
+                    href="#"
+                    data-subcategory-id="<%= value %>"
+            >
+                <%= variable.values.values[value].label %></a>
+            <% } %>
+        </div>
+    </div>
+    <%
+    }
+    } %>
+</div>
+<% } %>

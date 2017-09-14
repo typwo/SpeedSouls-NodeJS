@@ -4,47 +4,48 @@ $(document).ready(function () {
      * The function that actually builds the HTML and fill the leaderboards div
      */
     function _updateLeaderboards(leaderboards_data, bugged_number, callback) {
+        console.log(leaderboards_data);
         var div = $('<div></div>');
-        if (leaderboards_data.variables.length > 0) {
-            var sub_category_div = $('<div></div>').addClass('sub-categories-div');
-            for (var i in leaderboards_data.variables) {
-                var scategory = leaderboards_data.variables[i];
-                if (scategory['is-subcategory']) {
-
-                    var sub_categories_list = $('<div></div>').addClass('dropdown-menu').attr('aria-labelledby', 'dropdownMenuButton');
-                    for (var ayylmao in scategory.values.values) {
-                        sub_categories_list.append(
-                            $('<a></a>').addClass('dropdown-item').attr(
-                                {
-                                    'data-subcategory-id': ayylmao,
-                                    'href': '#'
-                                }
-                            ).text(
-                                scategory.values.values[ayylmao].label
-                            )
-                        )
-                    }
-
-                    var sub_category_select = $('<div></div>')
-                        .addClass('dropdown')
-                        .append(
-                            $('<button></button>').addClass('btn btn-secondary dropdown-toggle').attr({
-                                'id': 'dropdownMenuButton',
-                                'aria-haspopup': "true",
-                                'aria-expanded': "false",
-                                'type': 'button',
-                                'data-toggle': 'dropdown'
-                            }).text(
-                                scategory.name
-                            ).append(
-                                sub_categories_list
-                            )
-                        );
-                    sub_category_div.append(sub_category_select);
-                }
-            }
-            div.append(sub_category_div);
-        }
+        // if (leaderboards_data.variables.length > 0) {
+        //     var sub_category_div = $('<div></div>').addClass('sub-categories-div');
+        //     for (var i in leaderboards_data.variables) {
+        //         var scategory = leaderboards_data.variables[i];
+        //         if (scategory['is-subcategory']) {
+        //
+        //             var sub_categories_list = $('<div></div>').addClass('dropdown-menu').attr('aria-labelledby', 'dropdownMenuButton');
+        //             for (var ayylmao in scategory.values.values) {
+        //                 sub_categories_list.append(
+        //                     $('<a></a>').addClass('dropdown-item').attr(
+        //                         {
+        //                             'data-subcategory-id': ayylmao,
+        //                             'href': '#'
+        //                         }
+        //                     ).text(
+        //                         scategory.values.values[ayylmao].label
+        //                     )
+        //                 )
+        //             }
+        //
+        //             var sub_category_select = $('<div></div>')
+        //                 .addClass('dropdown')
+        //                 .append(
+        //                     $('<button></button>').addClass('btn btn-secondary dropdown-toggle').attr({
+        //                         'id': 'dropdownMenuButton',
+        //                         'aria-haspopup': "true",
+        //                         'aria-expanded': "false",
+        //                         'type': 'button',
+        //                         'data-toggle': 'dropdown'
+        //                     }).text(
+        //                         scategory.name
+        //                     ).append(
+        //                         sub_categories_list
+        //                     )
+        //                 );
+        //             sub_category_div.append(sub_category_select);
+        //         }
+        //     }
+        //     div.append(sub_category_div);
+        // }
 
         // Console names
         var consoles = {

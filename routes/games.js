@@ -51,7 +51,7 @@ router.get('/:game', function (req, res, next) {
         res.stop();
     } else {
         // TODO Remove hard coded game
-        speedruncom.findGame(game, function (game) {
+        speedruncom.findGame('botw', function (game) {
             var categories = [];
 
             if (game) {
@@ -74,13 +74,16 @@ router.get('/:game', function (req, res, next) {
                     break;
                 }
 
+                console.log(game.variables.data);
+
                 res.render('leaderboards', {
                     title: game.names.international,
                     game_id: game.id,
                     game_abbreviation: game.abbreviation,
                     categories: categories,
                     default_category: default_category,
-                    games: soulsgames
+                    games: soulsgames,
+                    variables: game.variables.data
                 });
             }
         });
