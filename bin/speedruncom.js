@@ -72,6 +72,7 @@ module.exports = {
             '/leaderboards/' + game_id + '/category/' + category_id,
             params
         );
+
         var options = {
             uri: url,
             json: true

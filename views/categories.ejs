@@ -20,7 +20,7 @@ for (var c in categories) {
     if (categories[c].misc === false) { %>
     <li class="nav-item nav-category">
         <a
-                class="nav-link category"
+                class="nav-link category disabled"
                 data-category-id="<%= c %>"
                 data-abbreviation="<%= categories[c].abbreviation %>"
                 href="#<%= categories[c].abbreviation %>"
@@ -44,7 +44,7 @@ for (var c in categories) {
             if (categories[c].misc === true) {
             %>
             <a
-                    class="dropdown-item category"
+                    class="dropdown-item category disabled"
                     data-category-id="<%= c %>"
                     data-abbreviation="<%= categories[c].abbreviation %>"
                     href="#<%= categories[c].abbreviation %>"

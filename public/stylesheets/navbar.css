@@ -1,0 +1,13 @@
+/* line 1, ../sass/navbar.sass */
+nav.navbar {
+  border-bottom: 1px solid #e9ecef;
+}
+/* line 4, ../sass/navbar.sass */
+nav.navbar .dropdown-menu-right {
+  right: 0;
+  left: auto;
+}
+/* line 8, ../sass/navbar.sass */
+nav.navbar button {
+  margin-right: 10px;
+}

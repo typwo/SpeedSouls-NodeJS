@@ -1,3 +1,17 @@
+/* line 1, ../sass/navbar.sass */
+nav.navbar {
+  border-bottom: 1px solid #e9ecef;
+}
+/* line 4, ../sass/navbar.sass */
+nav.navbar .dropdown-menu-right {
+  right: 0;
+  left: auto;
+}
+/* line 8, ../sass/navbar.sass */
+nav.navbar button {
+  margin-right: 10px;
+}
+
 /* line 4, ../sass/leaderboards.sass */
 #leaderboards table thead > th {
   text-align: center;
@@ -58,19 +72,15 @@
 #content {
   margin: auto;
   padding: 20px;
-  max-width: 1000px;
+  max-width: 950px;
 }
 
 /* line 9, ../sass/style.sass */
 body {
-  padding: 50px;
-}
-/* line 12, ../sass/style.sass */
-body .navbar {
-  border-bottom: 1px solid #e9ecef;
+  padding-top: 50px;
 }
 
-/* line 15, ../sass/style.sass */
+/* line 12, ../sass/style.sass */
 html {
   overflow-y: scroll;
 }

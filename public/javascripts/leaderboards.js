@@ -38,7 +38,7 @@ $(document).ready(function () {
 
     // When subcategory is changed
     $('.sub-categories-div').on('change', 'select', function () {
-        var category_id = $('.nav-category').find('.category.active').first().attr('data-abbreviation');
+        var category_id = $('#categoriesTab').find('.nav-category, .dropdown-menu').find('.category.active').first().attr('data-abbreviation');
         updateCategory(category_select, game_id, category_id);
     });
 });
@@ -86,11 +86,14 @@ function updateLeaderboards(game_id, category_id, sub_category, callback) {
 
         // Bug only present on RTA no loads leaderboards
         if (l.headers.default_timing === "realtime_noloads") {
+
+            console.log(l);
             // Get the category DATA from our own API
             getSpeedrunComCategoryNoLoadRunsNumber(
                 l.headers.game.abbreviation,
                 category_id,
                 function (bugged_total_no_load_runs) {
+
                     // Builds the HTML
                     _updateLeaderboards(l, bugged_total_no_load_runs, function (table) {
                         callback(table);
@@ -171,28 +174,33 @@ function updateLeaderboards(game_id, category_id, sub_category, callback) {
             var thead = $('<thead></thead>').append(
                 $($('<th></th>').text('Rank')),
                 $($('<th></th>').text('Runner')),
-                $($('<th></th>').text(leaderboards_data.headers.primary_name))
+                $($('<th></th>').addClass('d-none d-md-table-cell').text(leaderboards_data.headers.primary_name))
             );
 
             // Second timing method
             if (leaderboards_data.headers.secondary_name !== undefined) {
                 thead.append(
-                    $($('<th></th>').text(leaderboards_data.headers.secondary_name))
+                    $($('<th></th>').addClass('d-none d-md-table-cell').text(leaderboards_data.headers.secondary_name))
                 );
             }
+
+            // Time column for responsive tables
+            thead.append(
+                $($('<th></th>').addClass('d-md-none').text('Time'))
+            );
 
             // Variables
             for (var variable_i in leaderboards_data.variables) {
                 if (!leaderboards_data.variables[variable_i]['is-subcategory']) {
                     thead.append(
-                        $($('<th></th>').text(leaderboards_data.variables[variable_i].name))
+                        $($('<th></th>').addClass('d-none d-md-table-cell').text(leaderboards_data.variables[variable_i].name))
                     );
                 }
             }
 
             thead.append(
-                $($('<th></th>').text('Platform')),
-                $($('<th></th>').text('VOD'))
+                $($('<th></th>').addClass('d-none d-md-table-cell').text('Platform')),
+                $($('<th></th>').addClass('d-none d-md-table-cell').text('VOD'))
             );
 
             // Appends the head tp the table
@@ -247,24 +255,35 @@ function updateLeaderboards(game_id, category_id, sub_category, callback) {
                         r < bugged_number
                     ) {
                         row.append(
-                            $('<td></td>').text(run.secondary)
+                            $('<td></td>').addClass('d-none d-md-table-cell').text(run.secondary)
                         );
                         row.append(
-                            $('<td></td>').text("")
+                            $('<td></td>').addClass('d-none d-md-table-cell').text("")
                         );
                     }
                     // Show the times normally
                     else {
                         row.append(
-                            $('<td></td>').text(run.primary)
+                            $('<td></td>').addClass('d-none d-md-table-cell').text(run.primary)
                         );
 
                         // Second timing method
                         if (leaderboards_data.headers.secondary_name !== undefined) {
                             row.append(
-                                $('<td></td>').text(run.secondary)
+                                $('<td></td>').addClass('d-none d-md-table-cell').text(run.secondary)
                             );
                         }
+                    }
+
+                    // Time column for responsive tables
+                    if (run.primary !== "") {
+                        row.append(
+                            $('<td></td>').addClass('d-md-none').text(run.primary)
+                        );
+                    } else {
+                        row.append(
+                            $('<td></td>').addClass('d-md-none').text(run.secondary)
+                        );
                     }
 
                     // Variables
@@ -285,7 +304,7 @@ function updateLeaderboards(game_id, category_id, sub_category, callback) {
                                 }
                             }
                             row.append(
-                                $('<td></td>').text(
+                                $('<td></td>').addClass('d-none d-md-table-cell').text(
                                     var_label
                                 )
                             );
@@ -295,23 +314,23 @@ function updateLeaderboards(game_id, category_id, sub_category, callback) {
                     // Platform
                     if (consoles[run.platform] !== undefined) {
                         row.append(
-                            $('<td></td>').attr('title', run.platform).text(consoles[run.platform])
+                            $('<td></td>').addClass('d-none d-md-table-cell').attr('title', run.platform).text(consoles[run.platform])
                         );
                     } else {
                         row.append(
-                            $('<td></td>').text(run.platform)
+                            $('<td></td>').addClass('d-none d-md-table-cell').text(run.platform)
                         );
                     }
 
                     // VOD
                     if (run.video === undefined) {
                         row.append(
-                            $('<td></td>').text(' ')
+                            $('<td></td>').addClass('d-none d-md-table-cell').text(' ')
                         );
                         row.attr('data-video', run.weblink);
                     } else {
                         row.append(
-                            $('<td></td>').html(faw_video)
+                            $('<td></td>').addClass('d-none d-md-table-cell').html(faw_video)
                         );
                         row.attr('data-video', run.video);
                     }
@@ -358,6 +377,8 @@ function getSpeedrunComCats(game, callback) {
  * RETURNS THE CATEGORIES FROM SPEEDRUN.COM GAME PAGE
  */
 function getSpeedrunComCategoryNoLoadRunsNumber(game, category, callback) {
+    game = decodeURIComponent(game);
+    category = decodeURIComponent(category);
     getSpeedrunComCats(game, function (e) {
         for (var c in e) {
             if (e[c] === category) {
