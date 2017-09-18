@@ -12,7 +12,6 @@ $(document).ready(function () {
 
     // Build the subcategories if needed
     buildSubCategoriesSelects(game_id, category, default_category_id, function (data) {
-        console.log(data);
         $('.sub-categories-div').html(data.html);
 
         // Update the category
@@ -86,8 +85,6 @@ function updateLeaderboards(game_id, category_id, sub_category, callback) {
 
         // Bug only present on RTA no loads leaderboards
         if (l.headers.default_timing === "realtime_noloads") {
-
-            console.log(l);
             // Get the category DATA from our own API
             getSpeedrunComCategoryNoLoadRunsNumber(
                 l.headers.game.abbreviation,
@@ -111,7 +108,6 @@ function updateLeaderboards(game_id, category_id, sub_category, callback) {
          * The function that actually builds the HTML and fill the leaderboards div
          */
         function _updateLeaderboards(leaderboards_data, bugged_number, callback) {
-            console.log(leaderboards_data);
             var div = $('<div></div>');
             // if (leaderboards_data.variables.length > 0) {
             //     var sub_category_div = $('<div></div>').addClass('sub-categories-div');
@@ -415,8 +411,6 @@ function updateCategory(div_categories, game_id, id_or_abbreviation) {
         "a[data-category-id='" + id_or_abbreviation + "'], " +
         "a[data-abbreviation='" + id_or_abbreviation + "']"
     );
-
-    console.log(category);
 
     // If tab not found, use the default
     if (category.length === 0) {

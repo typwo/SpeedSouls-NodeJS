@@ -1,0 +1,15 @@
+/* line 2, ../sass/frontpage.sass */
+#content #font-page-logo {
+  padding: 20px;
+  width: 100%;
+  text-align: center;
+  border-bottom: 1px lightgray solid;
+}
+/* line 3, ../sass/frontpage.sass */
+#content #font-page-logo img {
+  width: 250px;
+}
+/* line 10, ../sass/frontpage.sass */
+#content #font-page-logo .world-name {
+  font-weight: bold;
+}

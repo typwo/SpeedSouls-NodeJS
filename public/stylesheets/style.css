@@ -1,36 +1,40 @@
 /* line 1, ../sass/navbar.sass */
 nav.navbar {
-  border-bottom: 1px solid #e9ecef;
+  border-bottom: 1px lightgray solid;
 }
 /* line 4, ../sass/navbar.sass */
+nav.navbar .nav-item {
+  margin-right: 20px;
+}
+/* line 7, ../sass/navbar.sass */
 nav.navbar .dropdown-menu-right {
   right: 0;
   left: auto;
 }
-/* line 8, ../sass/navbar.sass */
+/* line 11, ../sass/navbar.sass */
 nav.navbar button {
   margin-right: 10px;
 }
 
-/* line 4, ../sass/leaderboards.sass */
+/* line 7, ../sass/leaderboards.sass */
 #leaderboards table thead > th {
   text-align: center;
   border-top: none;
 }
-/* line 7, ../sass/leaderboards.sass */
+/* line 10, ../sass/leaderboards.sass */
 #leaderboards table tbody > tr {
   cursor: pointer;
   text-align: center;
 }
-/* line 10, ../sass/leaderboards.sass */
+/* line 13, ../sass/leaderboards.sass */
 #leaderboards table .empty-row {
   text-align: center;
 }
-/* line 13, ../sass/leaderboards.sass */
+/* line 16, ../sass/leaderboards.sass */
 #leaderboards .player-weblink {
   text-decoration: none;
 }
-/* line 16, ../sass/leaderboards.sass */
+/* line 19, ../sass/leaderboards.sass */
 #leaderboards .loader {
   margin-top: 10px;
   margin-right: auto;
@@ -51,36 +55,59 @@ nav.navbar button {
     transform: rotate(360deg);
   }
 }
-/* line 35, ../sass/leaderboards.sass */
+/* line 38, ../sass/leaderboards.sass */
 .sub-categories-div select {
   margin-top: 10px;
   margin-bottom: 10px;
   margin-right: 10px;
 }
 
-/* line 41, ../sass/leaderboards.sass */
+/* line 44, ../sass/leaderboards.sass */
 #categoriesTab {
   padding-top: 20px;
 }
-/* line 44, ../sass/leaderboards.sass */
+/* line 47, ../sass/leaderboards.sass */
 #categoriesTab .disabled {
   pointer-events: none;
   cursor: default;
 }
 
-/* line 4, ../sass/style.sass */
+/* line 2, ../sass/frontpage.sass */
+#content #font-page-logo {
+  padding: 20px;
+  width: 100%;
+  text-align: center;
+  border-bottom: 1px lightgray solid;
+}
+/* line 3, ../sass/frontpage.sass */
+#content #font-page-logo img {
+  width: 250px;
+}
+/* line 10, ../sass/frontpage.sass */
+#content #font-page-logo .world-name {
+  font-weight: bold;
+}
+
+/* line 5, ../sass/style.sass */
 #content {
+  min-height: 100%;
   margin: auto;
   padding: 20px;
-  max-width: 950px;
+  max-width: 800px;
+  border-right: 1px lightgray solid;
+  border-left: 1px lightgray solid;
+  background-color: white;
 }
 
-/* line 9, ../sass/style.sass */
+/* line 14, ../sass/style.sass */
 body {
+  height: 100%;
   padding-top: 50px;
+  background-color: #f8f9fa;
 }
 
-/* line 12, ../sass/style.sass */
+/* line 19, ../sass/style.sass */
 html {
+  height: 100%;
   overflow-y: scroll;
 }

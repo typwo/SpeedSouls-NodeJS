@@ -2,17 +2,26 @@
 <html>
 <head>
     <% include head.ejs %>
-  <script src="/javascripts/leaderboards.js"></script>
-  <link rel='stylesheet' href='/stylesheets/style.css' />
-  <title><%= title %> leaderboards</title>
+    <script src="/javascripts/frontpage.js"></script>
+    <link rel='stylesheet' href='/stylesheets/style.css'/>
+    <title><%= title %> leaderboards</title>
 </head>
 
 <body>
 <% include navbar.ejs %>
 
 <div id="content">
-  <h1><%= title %></h1>
-  <p>This is the frontpage</p>
+    <div id="font-page-logo">
+        <img src="http://speedsouls.com/images/e/e4/Speedsouls_horizontal.png" class="d-inline-block align-top"
+             alt="">
+        <div>Going Fast In <span class="world-name">Boletaria</span>, <span class="world-name">Lordran</span>, <span
+                    class="world-name">Drangleic</span>, <span class="world-name">Yharnam</span> and <span
+                    class="world-name">Lothric</span></div>
+    </div>
+    <div id="records">
+
+
+    </div>
 </div>
 </body>
 </html>

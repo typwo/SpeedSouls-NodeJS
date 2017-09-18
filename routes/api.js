@@ -86,5 +86,40 @@ router.get('/games/:game/category/:category', cache(cache_value), function (req,
     })
 });
 
+/**
+ * RETURNS WORLD RECORD FOR A CATEGORY
+ */
+router.get('/wr/category/:category_id', cache(cache_value), function (req, res_, next) {
+    speedruncom.getWorldRecord(req.params.category_id, function (data) {
+        res_.json(data);
+    })
+});
+
+/**
+ * RETURNS WORLD RECORDS FOR A GAME
+ */
+router.get('/wr/game/:game', /*cache(cache_value),*/ function (req, res_, next) {
+    speedruncom.findGame(req.params.game, function (data) {
+        if (data) {
+            promises = [];
+
+            for (var c in data.categories.data) {
+                var category = data.categories.data[c];
+                if (category.type === "per-game" && category.miscellaneous === false) {
+                    promises.push(speedruncom.PromiseGetCategoryRecord(category.id));
+                }
+            }
+
+            Promise.all(promises).then(function (results) {
+                res_.json(results);
+            }).catch(function (e) {
+                // Handle errors here
+                console.log(e);
+                res_.json({err: e});
+            });
+        }
+    });
+});
+
 
 module.exports = router;

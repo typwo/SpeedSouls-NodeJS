@@ -1,22 +1,22 @@
-/* line 4, ../sass/leaderboards.sass */
+/* line 7, ../sass/leaderboards.sass */
 #leaderboards table thead > th {
   text-align: center;
   border-top: none;
 }
-/* line 7, ../sass/leaderboards.sass */
+/* line 10, ../sass/leaderboards.sass */
 #leaderboards table tbody > tr {
   cursor: pointer;
   text-align: center;
 }
-/* line 10, ../sass/leaderboards.sass */
+/* line 13, ../sass/leaderboards.sass */
 #leaderboards table .empty-row {
   text-align: center;
 }
-/* line 13, ../sass/leaderboards.sass */
+/* line 16, ../sass/leaderboards.sass */
 #leaderboards .player-weblink {
   text-decoration: none;
 }
-/* line 16, ../sass/leaderboards.sass */
+/* line 19, ../sass/leaderboards.sass */
 #leaderboards .loader {
   margin-top: 10px;
   margin-right: auto;
@@ -37,18 +37,18 @@
     transform: rotate(360deg);
   }
 }
-/* line 35, ../sass/leaderboards.sass */
+/* line 38, ../sass/leaderboards.sass */
 .sub-categories-div select {
   margin-top: 10px;
   margin-bottom: 10px;
   margin-right: 10px;
 }
 
-/* line 41, ../sass/leaderboards.sass */
+/* line 44, ../sass/leaderboards.sass */
 #categoriesTab {
   padding-top: 20px;
 }
-/* line 44, ../sass/leaderboards.sass */
+/* line 47, ../sass/leaderboards.sass */
 #categoriesTab .disabled {
   pointer-events: none;
   cursor: default;

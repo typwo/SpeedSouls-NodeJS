@@ -13,17 +13,13 @@
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="http://example.com" id="navbarDropdownMenuLink"
                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Wikis
+                    Informations
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                    <% for (var g in games) {
-                    if (games.hasOwnProperty(g)) {
-                        var game = games[g];
-                    %>
-                    <a class="dropdown-item" href="/leaderboards/<%= g %>"><%= game.name %></a>
-                    <%
-                    }
-                    } %>
+                    <a class="dropdown-item" target="_blank" href="https://discordapp.com/invite/speedsouls">Discord</a>
+                    <a class="dropdown-item" target="_blank" href="http://twitch.tv/team/speedsouls">Twitch Team</a>
+                    <a class="dropdown-item" target="_blank" href="https://twitter.com/soulsruns">Twitter</a>
+                    <a class="dropdown-item" target="_blank" href="http://reddit.com/r/speedsouls">Reddit</a>
                 </div>
             </li>
             <li class="nav-item dropdown">
@@ -41,6 +37,9 @@
                     }
                     } %>
                 </div>
+            </li>
+            <li class="nav-item">
+                <a class="btn btn-outline-dark" href="http://speedsouls.com" role="button">SpeedSouls Wiki</a>
             </li>
             <li class="nav-item">
                 <!-- Example single danger button -->

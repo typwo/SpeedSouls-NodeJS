@@ -51,6 +51,10 @@ function buildUrl(url, params) {
     return api_url + url + encodeQueryData(params);
 }
 
+function buildRun(run) {
+
+}
+
 module.exports = {
     getLeaderboards: function (game_id, category_id, vars, callback) {
         var params = {
@@ -157,20 +161,6 @@ module.exports = {
 
                         // Variables
                         tmp.variables = run.run.values;
-                        // for (var index in run.run.values) {
-                        //     if (run.run.values.hasOwnProperty(index)) {
-                        //         var value = run.run.values[index];
-                        //         for (var jindex in variables) {
-                        //             tmp.anus = run.run.values;
-                        //             // if (variables.hasOwnProperty(jindex)) {
-                        //             //     variable = variablesdata[jindex];
-                        //             //     if (variable.id === index && index in variables) {
-                        //             //         tmp[variable.id] = variable.values.values[value].label;
-                        //             //     }
-                        //             // }
-                        //         }
-                        //     }
-                        // }
 
                         // VOD
                         if (run.run.videos !== null) {
@@ -259,6 +249,61 @@ module.exports = {
                 })
         }
     },
+    
+    PromiseGetCategoryRecord: function (category_id) {
+        return new Promise(function (resolve) {
+            var url = buildUrl(
+                '/categories/' + category_id + '/records',
+                {
+                    'top': 1,
+                    'embed': 'players,category'
+                }
+            );
+
+            var options = {
+                uri: url,
+                json: true
+            };
+
+            rp(options)
+                .then(function (json) {
+                    var category = json.data[0].category;
+                    var run = json.data[0].runs[0].run;
+                    var players = json.data[0].players.data;
+
+                    // Player(s)
+                    var players_xd = [];
+                    for (var p in players) {
+                        var _player = players[p];
+                        players_xd.push({
+                                name: _player.names === undefined ? _player.name : _player.names.international,
+                                weblink: _player.weblink !== undefined ? _player.weblink : ''
+                            }
+                        );
+                    }
+
+
+                    // Runs info
+                    run_data = {
+                        weblink: run.weblink,
+                        primary: formatTime(run.times['primary_t'])
+                    };
+
+                    record = {
+                        category: category.data,
+                        players: players_xd,
+                        runs: run,
+                        runs_d: run_data
+                    };
+                    resolve(record);
+                })
+                .catch(function (err) {
+                    // Crawling failed...
+                    console.log(err);
+                    resolve(err);
+                })
+        });
+    },
 
     findCategory: function (game, category, callback) {
         var url = buildUrl(
@@ -296,6 +341,33 @@ module.exports = {
                 // Crawling failed...
                 callback(err);
             })
+
+    },
+    
+    getWorldRecord: function (category_id, callback) {
+        var url = buildUrl(
+            '/categories/' + category_id + '/records',
+            {
+                embed: 'players'
+            }
+        );
+
+        var options = {
+            uri: url,
+            json: true
+        };
+
+        rp(options)
+            .then(function (json) {
+                var runs = json.data[0].runs;
+                console.log(runs);
+                callback(json)
+            })
+            .catch(function (err) {
+                // Crawling failed...
+                console.log(err);
+                callback(err);
+            });
 
     }
 };

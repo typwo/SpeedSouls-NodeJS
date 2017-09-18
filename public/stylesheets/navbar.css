@@ -1,13 +1,17 @@
 /* line 1, ../sass/navbar.sass */
 nav.navbar {
-  border-bottom: 1px solid #e9ecef;
+  border-bottom: 1px lightgray solid;
 }
 /* line 4, ../sass/navbar.sass */
+nav.navbar .nav-item {
+  margin-right: 20px;
+}
+/* line 7, ../sass/navbar.sass */
 nav.navbar .dropdown-menu-right {
   right: 0;
   left: auto;
 }
-/* line 8, ../sass/navbar.sass */
+/* line 11, ../sass/navbar.sass */
 nav.navbar button {
   margin-right: 10px;
 }

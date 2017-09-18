@@ -22,5 +22,13 @@
   "demonssouls": {
     "name": "Demon's Souls",
     "abbreviation": "Demons_Souls"
+  },
+  "botw": {
+    "name": "Breath of the Wild",
+    "abbreviation": "botw"
+  },
+  "smb1": {
+    "name": "Nique ta mère",
+    "abbreviation": "smb1"
   }
 }
